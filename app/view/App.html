@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTL App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Importar Planilhas e Selecionar Análise</h1>
+    <form id="fileUploadForm" method="post" enctype="multipart/form-data">
+        <label for="veiculoFile">Arquivo Veículo:</label>
+        <input type="file" id="veiculoFile" name="veiculoFile" accept=".xlsx">
+        <label for="abastecimentoFile">Arquivo de Abastecimento:</label>
+        <input type="file" id="abastecimentoFile" name="abastecimentoFile" accept=".xlsx">
+        <div>
+            <button type="button" onclick="runAnalysis('main')">Análise Principal</button>
+            <button type="button" onclick="runAnalysis('side')">Analisar Desempenho</button>
+        </div>
+    </form>
+
+    <div id="results"></div>
+
+    <button type="button" onclick="cleanAndShutdown()">Limpar e Fechar</button>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function cleanAndShutdown() {
+            fetch('/clean_and_shutdown', {
+                method: 'POST'
+            }).then(response => response.text())
+              .then(data => {
+                  console.log(data);
+                  alert('Aplicação fechada e arquivos limpos.');
+              })
+              .catch(error => console.error('Erro ao fechar a aplicação:', error));
+        }
+
+        function runAnalysis(consultType) {
+            const formData = new FormData(document.getElementById('fileUploadForm'));
+
+            fetch('/process_files', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Erro:', data.error);
+                    document.getElementById('results').innerHTML = 'Erro ao processar os dados: ' + data.error;
+                } else {
+                    fetch('/start_streamlit?consult_type=' + consultType, {
+                        method: 'GET'
+                    })
+                    .then(() => {
+                        window.open('/' + consultType + '_consult', '_blank');
+                    })
+                    .catch(error => console.error('Erro:', error));
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/log_style.css') }}">
+    <title>Login</title>
+</head>
+<body>
+    <main>
+        <section>
+            <h1>Login</h1>
+        </section>
+        <div class="fieldLogin">
+            <form method="post">
+                <span>
+                    <label for="usuario">Usuário:</label>
+                    <input type="text" id="usuario" name="usuario" required>
+                    <br>
+                    <label for="senha">Senha:</label>
+                    <input type="password" id="senha" name="senha" required>
+                    <br>
+                </span>
+                <button type="submit">Entrar</button>
+            </form>
+        </div>
+    </main><!--  
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+-->
+</body>
+</html> 
